@@ -292,3 +292,21 @@ async def create_raid(ctx, raid_name: str = "레이드", capacity: int = 4):
 
 if __name__ == "__main__":
     bot.run(TOKEN)
+    import os
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+# Render 포트 감지용 가벼운 웹 서버
+class SimpleHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Discord Bot is alive!")
+
+def run_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(('0.0.0.0', port), SimpleHandler)
+    server.serve_forever()
+
+# 봇 실행 전 웹 서버를 백그라운드 스레드로 실행
+threading.Thread(target=run_server, daemon=True).start()
